@@ -4,7 +4,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppStore } from './store';
-import { MainLayout, Header, Sidebar } from './components/layout';
+import { MainLayout, Sidebar } from './components/layout';
 import { NodePalette } from './components/nodes/NodePalette';
 import { FlowCanvas } from './components/nodes/flow';
 import { IAutomation, IConnection, INode, INodePort, IWorkflow } from './features/automation/models/Automation';
@@ -791,13 +791,13 @@ const App: React.FC = () => {
 
   return (
     <MainLayout
-      header={<Header title="Automation Vibe" sidebarCollapsed={!sidebarOpen} onSidebarToggle={toggleSidebar} />}
       sidebar={
         <Sidebar
           items={sidebarItems}
           isOpen={sidebarOpen}
           isDarkMode={editorSettings.darkMode}
           onToggleTheme={handleSidebarThemeToggle}
+          onToggleSidebar={toggleSidebar}
         />
       }
       sidebarCollapsed={!sidebarOpen}
@@ -1220,22 +1220,26 @@ const App: React.FC = () => {
                 </aside>
 
                 <section className="canvas-fullscreen-stage">
-                  <div className="canvas-fullscreen-toolbar">
+                  <div className="canvas-fullscreen-toolbar glass-panel">
                     <div className="canvas-fullscreen-toolbar-left">
                       <strong>Full Screen Canvas</strong>
                       <span>{selectedAutomation.name}</span>
-                      <input
-                        value={runInputText}
-                        onChange={event => setRunInputText(event.target.value)}
-                        placeholder="Initial text"
-                        className="canvas-fullscreen-input"
-                      />
+                      <div className="glass-input-wrapper">
+                        <input
+                          value={runInputText}
+                          onChange={event => setRunInputText(event.target.value)}
+                          placeholder="Initial workflow text..."
+                          className="canvas-fullscreen-input glass-input"
+                        />
+                        <div className="glass-input-glow"></div>
+                      </div>
                     </div>
                     <div className="canvas-fullscreen-toolbar-actions">
-                      <button className="btn btn-primary" onClick={runWorkflow}>
-                        ▶ Run
+                      <button className="btn btn-primary premium-run-btn" onClick={runWorkflow}>
+                        <span className="btn-text">▶ Run</span>
+                        <div className="btn-glow"></div>
                       </button>
-                      <button className="btn btn-secondary" onClick={() => setExecutionLines([])}>
+                      <button className="btn btn-secondary premium-clear-btn" onClick={() => setExecutionLines([])}>
                         Clear Output
                       </button>
                       <button

@@ -150,15 +150,14 @@ body.theme-dark .header-left h1 {
 
 /* Glass Sidebar (Floating) */
 .layout-sidebar {
-  margin: 0 0 16px 24px !important;
+  margin: 16px 0 16px 24px !important;
   border-radius: 24px !important;
   background: var(--glass-bg) !important;
   backdrop-filter: var(--glass-blur) !important;
   -webkit-backdrop-filter: var(--glass-blur) !important;
   border: var(--glass-border) !important;
   box-shadow: var(--glass-shadow) !important;
-  height: calc(100vh - 120px) !important;
-  margin-top: 16px !important;
+  height: calc(100vh - 32px) !important;
   overflow: hidden !important;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease !important;
 }
@@ -174,8 +173,14 @@ body.theme-dark .layout-sidebar {
 
 /* Content Area Spacing */
 .layout-content {
-  padding: 16px 24px 16px 24px;
-  gap: 24px;
+  padding: 16px 24px !important;
+  gap: 16px;
+}
+
+.layout-main {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Page Shell / Content Cards */
@@ -448,7 +453,7 @@ body.theme-dark .node-item-ports .port {
 }
 
 @keyframes modalPopup {
-  form {
+  from {
     opacity: 0;
     transform: scale(0.9) translateY(20px);
   }
@@ -456,4 +461,137 @@ body.theme-dark .node-item-ports .port {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+}
+/* --- ULTIMATE UI FULLSCREEN & SCROLL OVERRIDES --- */
+html, body, #root, .app-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden !important; 
+  background-color: var(--color-slate-50);
+}
+
+/* Ensure no child pushes the layout */
+.layout-content {
+  overflow: hidden !important; 
+}
+
+/* 
+  --- ADVANCED GLASS & EFFECTS (Premium Input & Buttons) ---
+*/
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-radius: 16px;
+}
+
+.glass-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  padding: 10px 16px !important;
+  border-radius: 12px !important;
+  outline: none !important;
+  transition: all 0.3s ease !important;
+  font-family: inherit;
+  width: 220px;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.premium-run-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
+}
+
+.premium-run-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6) !important;
+}
+
+.btn-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.premium-run-btn:hover .btn-glow {
+  opacity: 1;
+  animation: rotateGlow 3s linear infinite;
+}
+
+@keyframes rotateGlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- MAGICAL REACT FLOW ANIMATIONS --- */
+
+.react-flow__node.selected {
+  animation: nodeSelectedPulse 2s infinite alternate !important;
+  box-shadow: 0 0 0 2px #3b82f6, 0 0 20px rgba(59, 130, 246, 0.6) !important;
+}
+
+@keyframes nodeSelectedPulse {
+  0% { box-shadow: 0 0 0 2px #3b82f6, 0 0 15px rgba(59, 130, 246, 0.4); }
+  100% { box-shadow: 0 0 0 3px #10b981, 0 0 30px rgba(16, 185, 129, 0.8); }
+}
+
+.react-flow__edge-path {
+  stroke: rgba(255, 255, 255, 0.4) !important;
+  stroke-width: 3 !important;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease !important;
+}
+
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke: #3b82f6 !important;
+  stroke-dasharray: 8 8 !important;
+  animation: energyFlow 1s linear infinite !important;
+  filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.8));
+}
+
+@keyframes energyFlow {
+  from { stroke-dashoffset: 16; }
+  to { stroke-dashoffset: 0; }
+}
+
+.react-flow__handle {
+  background: var(--glass-bg) !important;
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease !important;
+}
+
+.react-flow__handle:hover {
+  transform: scale(1.5);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8), 0 0 30px rgba(255, 255, 255, 0.6) !important;
+  background: #3b82f6 !important;
+  border-color: #fff !important;
 }
