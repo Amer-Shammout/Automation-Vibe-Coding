@@ -14,6 +14,11 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ header, sidebar, sidebarCollapsed = false, main }) => {
   return (
     <div className="main-layout">
+      {/* Decorative Orbs for Glassmorphism UI */}
+      <div className="bg-orb bg-orb-1"></div>
+      <div className="bg-orb bg-orb-2"></div>
+      <div className="bg-orb bg-orb-3"></div>
+      
       {header && <header className="layout-header">{header}</header>}
       <div className="layout-content">
         {sidebar && <aside className={`layout-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>{sidebar}</aside>}

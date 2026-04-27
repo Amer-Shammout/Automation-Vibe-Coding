@@ -15,6 +15,7 @@ import { ExecutionsView, IExecutionViewItem } from './features/execution/views/E
 import { SettingsView, IEditorSettings } from './features/settings/views/SettingsView';
 import { v4 as uuid } from 'uuid';
 import './styles/globals.css';
+import './styles/glassmorphism.css';
 
 interface NodeTemplate {
   id: string;

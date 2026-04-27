@@ -1,0 +1,459 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* Glassmorphism Premium AI/Automation Theme */
+
+body, button, input, textarea, select {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+:root {
+  /* Common variables for glass */
+  --glass-blur: blur(16px);
+  --glass-border: 1px solid rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-light: rgba(255, 255, 255, 0.5);
+  --glass-hover: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+  --glass-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+  
+  /* Dynamic Mesh Backgorund Light mode */
+  --mesh-color-1: rgba(59, 130, 246, 0.15); /* Blue */
+  --mesh-color-2: rgba(16, 185, 129, 0.15); /* Emerald */
+  --mesh-color-3: rgba(139, 92, 246, 0.15); /* Violet */
+  --mesh-color-4: rgba(236, 72, 153, 0.15); /* Pink */
+}
+
+body.theme-dark {
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-light: rgba(30, 41, 59, 0.5);
+  --glass-hover: rgba(30, 41, 59, 0.8);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --glass-glow: 0 0 30px rgba(59, 130, 246, 0.25);
+  
+  /* Dynamic Mesh Background Dark mode */
+  --mesh-color-1: rgba(29, 78, 216, 0.25); /* Deep Blue */
+  --mesh-color-2: rgba(4, 120, 87, 0.2); /* Deep Emerald */
+  --mesh-color-3: rgba(109, 40, 217, 0.25); /* Deep Violet */
+  --mesh-color-4: rgba(190, 24, 93, 0.2); /* Deep Pink */
+}
+
+/* Global Application Background - Animated Mesh */
+.main-layout {
+  background-color: var(--color-slate-50);
+  background-image: 
+    radial-gradient(circle at 15% 50%, var(--mesh-color-1), transparent 30%),
+    radial-gradient(circle at 85% 30%, var(--mesh-color-2), transparent 30%),
+    radial-gradient(circle at 50% 80%, var(--mesh-color-3), transparent 35%),
+    radial-gradient(circle at 80% 90%, var(--mesh-color-4), transparent 35%);
+  background-size: 150% 150%;
+  animation: mesh-animation 20s ease infinite alternate;
+  color: var(--color-slate-900);
+  position: relative;
+  z-index: 1;
+}
+
+/* Floating Decorative Orbs */
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  animation: floatOrb 25s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+
+.bg-orb-1 {
+  width: 40vw;
+  height: 40vw;
+  background: var(--mesh-color-1);
+  top: -10vw;
+  left: -20vw;
+}
+
+.bg-orb-2 {
+  width: 35vw;
+  height: 35vw;
+  background: var(--mesh-color-3);
+  bottom: -10vw;
+  right: -10vw;
+  animation-delay: -10s;
+}
+
+.bg-orb-3 {
+  width: 30vw;
+  height: 30vw;
+  background: var(--mesh-color-2);
+  top: 40vh;
+  left: 40vw;
+  animation-delay: -5s;
+  animation-duration: 20s;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(15vw, 10vw) scale(1.1); }
+  66% { transform: translate(-5vw, 20vw) scale(0.9); }
+  100% { transform: translate(10vw, -5vw) scale(1.2); }
+}
+
+body.theme-dark .main-layout {
+  background-color: #020617;
+}
+
+@keyframes mesh-animation {
+  0% { background-position: 0% 0%; }
+  25% { background-position: 100% 0%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* Glass Header (Floating) */
+.layout-header {
+  margin: 16px 24px 0px 24px !important;
+  padding: 16px 24px !important;
+  border-radius: 24px !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  position: sticky !important;
+  top: 16px !important;
+  z-index: 50 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body.theme-dark .layout-header {
+  background: var(--glass-bg) !important;
+  border: var(--glass-border) !important;
+}
+
+.layout-header:hover {
+  box-shadow: var(--glass-shadow), var(--glass-glow);
+}
+
+/* Header Text Gradient */
+.header-left h1 {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+body.theme-dark .header-left h1 {
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glass Sidebar (Floating) */
+.layout-sidebar {
+  margin: 0 0 16px 24px !important;
+  border-radius: 24px !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  height: calc(100vh - 120px) !important;
+  margin-top: 16px !important;
+  overflow: hidden !important;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease !important;
+}
+
+body.theme-dark .layout-sidebar {
+  background: var(--glass-bg) !important;
+  border: var(--glass-border) !important;
+}
+
+.layout-sidebar:hover {
+  box-shadow: var(--glass-shadow), var(--glass-glow);
+}
+
+/* Content Area Spacing */
+.layout-content {
+  padding: 16px 24px 16px 24px;
+  gap: 24px;
+}
+
+/* Page Shell / Content Cards */
+.page-shell, .node-library-card, .settings-card, .automation-list {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border) !important;
+  border-radius: 24px !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all 0.3s ease;
+}
+
+.page-shell:hover, .node-library-card:hover, .settings-card:hover {
+  box-shadow: var(--glass-shadow), var(--glass-glow) !important;
+  transform: translateY(-2px);
+}
+
+/* Glass Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::after {
+  left: 150%;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5), 0 0 15px rgba(37, 99, 235, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-outline {
+  background: var(--glass-light) !important;
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border) !important;
+  color: var(--color-slate-800) !important;
+}
+
+body.theme-dark .btn-outline {
+  color: var(--color-slate-200) !important;
+}
+
+.btn-outline:hover {
+  background: var(--glass-hover) !important;
+  box-shadow: var(--glass-glow) !important;
+}
+
+/* Sidebar Active Items - Neon effect */
+.sidebar-item.active {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.1) !important;
+}
+
+.sidebar-item.active::before {
+  background: var(--color-primary-light) !important;
+  box-shadow: 0 0 10px var(--color-primary-light) !important;
+  height: 60%;
+  top: 20%;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Nodes & Flow Canvas Glassmorphism */
+.flow-canvas-container .reactflow {
+  background: transparent !important; /* Let mesh shine through */
+  border-radius: 20px;
+}
+
+.flow-canvas-container .reactflow-background {
+  background-color: transparent !important;
+}
+
+.flow-canvas-container .reactflow-background circle {
+  fill: var(--color-slate-400) !important;
+  opacity: 0.2;
+}
+
+.reactflow-controls {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border: var(--glass-border) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.reactflow-controls button {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: var(--glass-border) !important;
+}
+
+.reactflow-controls button:last-child {
+  border-bottom: none !important;
+}
+
+/* Canvas Node Item - Premium Holographic Card */
+.canvas-node, .node-item {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 16px !important;
+  position: relative;
+  overflow: visible !important;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+body.theme-dark .canvas-node, body.theme-dark .node-item {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8)) !important;
+}
+
+.canvas-node:hover, .node-item:hover, .canvas-node.selected, .node-item.selected {
+  transform: translateY(-4px) scale(1.02) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 20px rgba(59, 130, 246, 0.3) !important;
+}
+
+.canvas-node::after, .node-item::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.1) 100%);
+  border-radius: 17px;
+  z-index: -1;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+body.theme-dark .canvas-node::after, body.theme-dark .node-item::after {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.4) 0%, transparent 40%, transparent 60%, rgba(96, 165, 250, 0.1) 100%);
+}
+
+/* Ports with Glow */
+.flow-canvas-container .reactflow__handle, .port-dot {
+  background: #3b82f6 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 8px #3b82f6, 0 0 15px #3b82f6 !important;
+  width: 10px !important;
+  height: 10px !important;
+  transition: all 0.2s ease;
+}
+
+body.theme-dark .flow-canvas-container .reactflow__handle,
+body.theme-dark .port-dot {
+  border-color: #0f172a !important;
+}
+
+.flow-canvas-container .reactflow__handle:hover,
+.flow-canvas-container .reactflow__handle.connectingFrom {
+  transform: scale(1.5);
+  box-shadow: 0 0 12px #60a5fa, 0 0 25px #60a5fa !important;
+  background: #60a5fa !important;
+}
+
+/* Ports Micro-Interactions */
+.node-item-ports .port {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body.theme-dark .node-item-ports .port {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.canvas-node:hover .port-input, .node-item:hover .port-input {
+  transform: translateX(8px);
+  box-shadow: -8px 0 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.canvas-node:hover .port-output, .node-item:hover .port-output {
+  transform: translateX(-8px);
+  box-shadow: 8px 0 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Automation List Items */
+.automation-item {
+  background: transparent !important;
+  border-bottom: var(--glass-border) !important;
+  transition: all 0.3s ease !important;
+}
+
+.automation-item:hover, .automation-item.selected {
+  background: rgba(59, 130, 246, 0.05) !important;
+  backdrop-filter: blur(4px);
+}
+
+.automation-item.selected {
+  border-left: 3px solid #3b82f6 !important;
+  box-shadow: inset 5px 0 10px -5px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Custom Output/Execution overlays */
+.execution-output-panel {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: 16px !important;
+}
+
+.canvas-fullscreen-overlay {
+  background: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.canvas-fullscreen-dock {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  border: var(--glass-border) !important;
+  border-radius: 24px !important;
+}
+
+.canvas-fullscreen-output {
+  background: rgba(15, 23, 42, 0.7) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(59,130,246,0.1) !important;
+  border-radius: 16px !important;
+}
+
+/* Animations for Lines / Edges */
+.reactflow__edge-path {
+  stroke-dasharray: 5;
+  animation: flowAnimation 1s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.8));
+}
+
+@keyframes flowAnimation {
+  from { stroke-dashoffset: 10; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Modal UI Overhaul */
+.modal-overlay {
+  background: rgba(15, 23, 42, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.modal-content {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3), 0 0 30px rgba(59,130,246,0.1) !important;
+  animation: modalPopup 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+@keyframes modalPopup {
+  form {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
