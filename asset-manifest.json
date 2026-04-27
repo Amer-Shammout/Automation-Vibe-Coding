@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Automation-Vibe-Coding/static/css/main.e58e55e5.css",
-    "main.js": "/Automation-Vibe-Coding/static/js/main.982ce6e3.js",
+    "main.css": "/Automation-Vibe-Coding/static/css/main.fcc06d5f.css",
+    "main.js": "/Automation-Vibe-Coding/static/js/main.cc11a181.js",
     "index.html": "/Automation-Vibe-Coding/index.html",
-    "main.e58e55e5.css.map": "/Automation-Vibe-Coding/static/css/main.e58e55e5.css.map",
-    "main.982ce6e3.js.map": "/Automation-Vibe-Coding/static/js/main.982ce6e3.js.map"
+    "main.fcc06d5f.css.map": "/Automation-Vibe-Coding/static/css/main.fcc06d5f.css.map",
+    "main.cc11a181.js.map": "/Automation-Vibe-Coding/static/js/main.cc11a181.js.map"
   },
   "entrypoints": [
-    "static/css/main.e58e55e5.css",
-    "static/js/main.982ce6e3.js"
+    "static/css/main.fcc06d5f.css",
+    "static/js/main.cc11a181.js"
   ]
 }
