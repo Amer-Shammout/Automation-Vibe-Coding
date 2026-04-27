@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Automation-Vibe-Coding/static/css/main.e58e55e5.css",
+    "main.js": "/Automation-Vibe-Coding/static/js/main.982ce6e3.js",
+    "index.html": "/Automation-Vibe-Coding/index.html",
+    "main.e58e55e5.css.map": "/Automation-Vibe-Coding/static/css/main.e58e55e5.css.map",
+    "main.982ce6e3.js.map": "/Automation-Vibe-Coding/static/js/main.982ce6e3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e58e55e5.css",
+    "static/js/main.982ce6e3.js"
+  ]
+}
