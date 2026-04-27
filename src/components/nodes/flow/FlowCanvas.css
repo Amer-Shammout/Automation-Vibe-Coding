@@ -1,0 +1,152 @@
+/**
+ * FlowCanvas Styles
+ */
+
+.flow-canvas-container {
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+.flow-canvas-container .reactflow {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.flow-canvas-container .reactflow-background {
+  background-color: #1e293b;
+}
+
+.flow-canvas-container .reactflow-background circle {
+  fill: #334155;
+  opacity: 0.5;
+}
+
+/* Controls styling */
+.flow-canvas-container .reactflow-controls {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid #3b82f6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.flow-canvas-container .reactflow-controls button {
+  background: #1e293b;
+  border: 1px solid #3b82f6;
+  color: #f1f5f9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.flow-canvas-container .reactflow-controls button:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+.flow-canvas-container .reactflow-controls button:not(:last-child) {
+  border-bottom: 1px solid #3b82f6;
+}
+
+.flow-canvas-container .reactflow-controls button svg {
+  fill: currentColor;
+}
+
+body.theme-dark .flow-canvas-container .reactflow-controls {
+  background: rgba(2, 6, 23, 0.94) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.7) !important;
+}
+
+body.theme-dark .flow-canvas-container .reactflow-controls button {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+body.theme-dark .flow-canvas-container .reactflow-controls button:hover {
+  background: #1d4ed8 !important;
+  border-color: #60a5fa !important;
+  color: #ffffff !important;
+}
+
+body.theme-dark .flow-canvas-container .reactflow-controls button:not(:last-child) {
+  border-bottom-color: #334155 !important;
+}
+
+/* Minimap styling (if enabled) */
+.flow-canvas-container .reactflow-minimap {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid #3b82f6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Connection line styling */
+.flow-canvas-container .reactflow-connectionline {
+  stroke: #3b82f6;
+  stroke-width: 3;
+}
+
+.flow-canvas-container .reactflow__handle {
+  width: 14px;
+  height: 14px;
+}
+
+.flow-canvas-container .reactflow__edge-path {
+  stroke-width: 2.8;
+}
+
+.flow-canvas-container .reactflow__edge-interaction {
+  stroke-width: 28;
+}
+
+/* Pane animation on click */
+.flow-canvas-container .reactflow.selectable .reactflow-viewport {
+  cursor: grab;
+}
+
+.flow-canvas-container .reactflow.selectable .reactflow-viewport.dragging {
+  cursor: grabbing;
+}
+
+/* Node selection box */
+.flow-canvas-container .nowheel .react-flow-selectionpane-selection {
+  box-shadow:
+    0 0 0 1px #3b82f6,
+    inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .flow-canvas-container .reactflow-controls {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .flow-canvas-container .reactflow {
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .flow-canvas-container .reactflow-controls {
+    gap: 0;
+  }
+
+  .flow-canvas-container .reactflow-controls button {
+    padding: 8px;
+  }
+}
+
+/* Smooth transitions */
+.flow-canvas-container .reactflow .reactflow-node {
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.flow-canvas-container .reactflow .reactflow-edge {
+  transition:
+    stroke 0.2s ease,
+    stroke-width 0.2s ease;
+}

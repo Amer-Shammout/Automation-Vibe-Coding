@@ -1,0 +1,74 @@
+/**
+ * CustomEdge Styles
+ */
+
+.custom-edge {
+  pointer-events: auto;
+}
+
+.custom-edge .edge-path {
+  stroke: url(#edgeGradient);
+  stroke-width: 2;
+  fill: none;
+  transition: stroke-width 0.2s ease;
+}
+
+.custom-edge:hover .edge-path {
+  stroke-width: 3;
+}
+
+.custom-edge.selected .edge-path {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+}
+
+.custom-edge .edge-flow {
+  stroke: url(#edgeGradient);
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.4;
+  animation: flowAnimation 2s infinite linear;
+  stroke-dasharray: 5, 5;
+}
+
+.custom-edge.selected .edge-flow {
+  animation: flowAnimationFast 1s infinite linear;
+  opacity: 0.7;
+}
+
+.custom-edge .edge-selection {
+  stroke: #93c5fd;
+  stroke-width: 4;
+  fill: none;
+  opacity: 0.2;
+}
+
+@keyframes flowAnimation {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 10;
+  }
+}
+
+@keyframes flowAnimationFast {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 10;
+  }
+}
+
+/* Connection line being drawn */
+.reactflow__connectionline {
+  stroke: #3b82f6;
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+/* Connection indicator */
+.reactflow__connection {
+  stroke: #3b82f6;
+}
