@@ -53,6 +53,32 @@ body.theme-dark {
   z-index: 1;
 }
 
+.main-layout::before {
+  content: '';
+  position: absolute;
+  inset: -10% -10% auto -10%;
+  height: 70%;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35), transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.18), transparent 55%),
+    radial-gradient(circle at 50% 60%, rgba(16, 185, 129, 0.14), transparent 60%);
+  opacity: 0.6;
+  filter: blur(22px);
+  animation: ambientGlowShift 18s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes ambientGlowShift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(2%, 2%, 0) scale(1.05);
+    opacity: 0.7;
+  }
+}
+
 /* Floating Decorative Orbs */
 .bg-orb {
   position: absolute;
@@ -294,26 +320,64 @@ body.theme-dark .btn-outline {
 
 /* Canvas Node Item - Premium Holographic Card */
 .canvas-node, .node-item {
-  background: var(--glass-bg) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
-  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(22px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  border-radius: 18px !important;
   position: relative;
   overflow: visible !important;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
 }
 
 body.theme-dark .canvas-node, body.theme-dark .node-item {
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8)) !important;
+  border: 1px solid rgba(51, 65, 85, 0.65) !important;
+  background: rgba(15, 23, 42, 0.75) !important;
+  box-shadow: 0 18px 36px rgba(2, 6, 23, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 .canvas-node:hover, .node-item:hover, .canvas-node.selected, .node-item.selected {
   transform: translateY(-4px) scale(1.02) !important;
   border-color: rgba(59, 130, 246, 0.5) !important;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 20px rgba(59, 130, 246, 0.3) !important;
+}
+
+.node-item-badge {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(14, 165, 233, 0.4)) !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+  color: #1d4ed8 !important;
+}
+
+body.theme-dark .node-item-badge {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(14, 165, 233, 0.2)) !important;
+  border-color: rgba(96, 165, 250, 0.55) !important;
+  color: #e0f2fe !important;
+}
+
+.palette-node,
+.node-library-card {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.38) !important;
+  backdrop-filter: blur(18px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(140%) !important;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border-radius: 16px !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+
+.palette-node:hover,
+.node-library-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59, 130, 246, 0.45) !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.18), 0 0 18px rgba(59, 130, 246, 0.2) !important;
+}
+
+body.theme-dark .palette-node,
+body.theme-dark .node-library-card {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  box-shadow: 0 16px 32px rgba(2, 6, 23, 0.55) !important;
 }
 
 .canvas-node::after, .node-item::after {
@@ -515,19 +579,19 @@ html, body, #root, .app-container {
 .premium-run-btn {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
   border: none !important;
   border-radius: 12px !important;
   color: white !important;
   font-weight: 600 !important;
   padding: 10px 20px !important;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
 }
 
 .premium-run-btn:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.55) !important;
 }
 
 .btn-glow {

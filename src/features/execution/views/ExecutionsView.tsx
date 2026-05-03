@@ -3,6 +3,7 @@ import { CheckCircle, AlertCircle, Clock } from '../../../components/icons';
 
 export interface IExecutionViewItem {
   id: string;
+  automationId: string;
   automationName: string;
   status: 'success' | 'failed' | 'running';
   startedAt: Date;

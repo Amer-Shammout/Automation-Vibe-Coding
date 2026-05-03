@@ -8,7 +8,7 @@ export type ExecutionPayload = {
 
 const DEFAULT_COLOR = '#94a3b8';
 
-export type ExecutionNodeType = 'log' | 'color';
+export type ExecutionNodeType = 'start' | 'log' | 'color';
 
 export type ExecutionStepStatus = 'executed' | 'warning' | 'error' | 'skipped';
 
@@ -24,7 +24,7 @@ export interface ExecutionStep {
 
 export interface ExecutionRunResult {
   success: boolean;
-  steps: ExecutionStep[];
+  steps: ExecutionStep[][]; // Array of execution waves
   warnings: string[];
   errors: string[];
   rootNodeIds: string[];
@@ -45,17 +45,6 @@ interface BuiltGraph {
   nodeMap: Map<string, INode>;
   invalidConnections: string[];
 }
-
-const normalizePayload = (input?: Partial<ExecutionPayload>): ExecutionPayload | null => {
-  if (!input || typeof input.text !== 'string' || input.text.trim().length === 0) {
-    return null;
-  }
-
-  return {
-    text: input.text.trim(),
-    color: typeof input.color === 'string' && input.color.trim().length > 0 ? input.color.trim() : undefined,
-  };
-};
 
 const buildGraph = (nodes: INode[], connections: IConnection[]): BuiltGraph => {
   const nodeMap = new Map<string, INode>();
@@ -87,47 +76,27 @@ const buildGraph = (nodes: INode[], connections: IConnection[]): BuiltGraph => {
   };
 };
 
-const detectCycle = (graph: BuiltGraph): string[] | null => {
-  const visitState = new Map<string, 0 | 1 | 2>();
-  const stack: string[] = [];
-
-  const visit = (nodeId: string): string[] | null => {
-    visitState.set(nodeId, 1);
-    stack.push(nodeId);
-
-    for (const nextNodeId of graph.outgoingByNode.get(nodeId) ?? []) {
-      const state = visitState.get(nextNodeId) ?? 0;
-      if (state === 1) {
-        const cycleStartIndex = stack.indexOf(nextNodeId);
-        return stack.slice(cycleStartIndex).concat(nextNodeId);
-      }
-
-      if (state === 0) {
-        const cycle = visit(nextNodeId);
-        if (cycle) {
-          return cycle;
-        }
-      }
-    }
-
-    stack.pop();
-    visitState.set(nodeId, 2);
-    return null;
-  };
-
-  for (const nodeId of graph.nodeMap.keys()) {
-    if ((visitState.get(nodeId) ?? 0) === 0) {
-      const cycle = visit(nodeId);
-      if (cycle) {
-        return cycle;
-      }
-    }
-  }
-
-  return null;
+const mixColors = (colors: string[]): string => {
+  const validColors = colors.filter(c => c && c.startsWith('#'));
+  if (validColors.length === 0) return DEFAULT_COLOR;
+  if (validColors.length === 1) return validColors[0];
+  
+  let r = 0, g = 0, b = 0;
+  validColors.forEach(c => {
+    const hex = c.replace('#', '');
+    r += parseInt(hex.length === 3 ? hex[0]+hex[0] : hex.substring(0, 2), 16) || 0;
+    g += parseInt(hex.length === 3 ? hex[1]+hex[1] : hex.substring(2, 4), 16) || 0;
+    b += parseInt(hex.length === 3 ? hex[2]+hex[2] : hex.substring(4, 6), 16) || 0;
+  });
+  
+  r = Math.floor(r / validColors.length);
+  g = Math.floor(g / validColors.length);
+  b = Math.floor(b / validColors.length);
+  
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 };
 
-const createRuntimeNode = (node: INode, fallbackInput?: ExecutionPayload | null): RuntimeNode => {
+const createRuntimeNode = (node: INode): RuntimeNode => {
   const normalizedType = String(node.type || '').toLowerCase();
 
   return {
@@ -136,16 +105,15 @@ const createRuntimeNode = (node: INode, fallbackInput?: ExecutionPayload | null)
     data: node.config,
     execute: (input?: ExecutionPayload) => {
       const label = `[Node ID: ${node.id} | Type: ${normalizedType}]`;
-      const fallbackText = fallbackInput?.text?.trim();
       const inputText = input?.text?.trim();
 
-      if (normalizedType === 'color') {
-        const text = inputText || fallbackText;
-        if (!text) {
-          logger.warn(`${label} → Missing input`);
-          return null;
-        }
+      if (normalizedType === 'start') {
+        const configuredText = typeof node.config.text === 'string' ? node.config.text : 'Start Run';
+        return { text: configuredText, color: node.config.color ?? DEFAULT_COLOR };
+      }
 
+      if (normalizedType === 'color') {
+        const text = inputText || 'No Input';
         const selectedColor =
           typeof node.config.color === 'string' && node.config.color.trim().length > 0
             ? node.config.color.trim()
@@ -156,11 +124,7 @@ const createRuntimeNode = (node: INode, fallbackInput?: ExecutionPayload | null)
           color: selectedColor,
         };
 
-        logger.info(`${label} → Executed`, {
-          input,
-          output,
-        });
-        logger.info(`[Color Node] → Color set to ${selectedColor} for text: ${text}`);
+        logger.info(`${label} → Executed`, { input, output });
         return output;
       }
 
@@ -170,22 +134,10 @@ const createRuntimeNode = (node: INode, fallbackInput?: ExecutionPayload | null)
             ? node.config.message.trim()
             : '';
 
-        const text = configuredMessage || inputText || fallbackText;
-        if (!text) {
-          logger.warn(`${label} → Missing input`);
-          return null;
-        }
+        const text = configuredMessage || inputText || 'No Input';
+        const output: ExecutionPayload = { text, color: input?.color };
 
-        const output: ExecutionPayload = {
-          text,
-          color: input?.color,
-        };
-
-        logger.info(`${label} → Executed`, {
-          input,
-          output,
-        });
-        logger.info(`[Log Node] → LOG: ${text} (color: ${output.color ?? 'none'})`);
+        logger.info(`${label} → Executed`, { input, output });
         return output;
       }
 
@@ -197,66 +149,43 @@ const createRuntimeNode = (node: INode, fallbackInput?: ExecutionPayload | null)
 
 export const executeWorkflowGraph = (
   nodes: INode[],
-  connections: IConnection[],
-  initialInput?: Partial<ExecutionPayload>
+  connections: IConnection[]
 ): ExecutionRunResult => {
   const graph = buildGraph(nodes, connections);
-  const steps: ExecutionStep[] = [];
+  const steps: ExecutionStep[][] = [];
   const warnings: string[] = [];
   const errors: string[] = [];
   const executionOrder: string[] = [];
-  const payloadByNode = new Map<string, ExecutionPayload>();
   const processed = new Set<string>();
 
   if (nodes.length === 0) {
     const warning = 'No nodes found in the workflow.';
     warnings.push(warning);
     logger.warn(warning);
-    return {
-      success: false,
-      steps,
-      warnings,
-      errors,
-      rootNodeIds: [],
-      executionOrder,
-    };
+    return { success: false, steps, warnings, errors, rootNodeIds: [], executionOrder };
   }
 
   if (graph.invalidConnections.length > 0) {
-    const warning = `Ignored ${graph.invalidConnections.length} invalid connection(s) with missing endpoints.`;
+    const warning = `Ignored ${graph.invalidConnections.length} invalid connection(s).`;
     warnings.push(warning);
-    logger.warn(warning, graph.invalidConnections);
   }
 
-  const rootNodeIds = nodes.filter(node => (graph.incomingByNode.get(node.id) ?? []).length === 0).map(node => node.id);
+  // Automation ONLY starts from nodes of type 'start'
+  const rootNodeIds = nodes.filter(node => node.type.toLowerCase() === 'start').map(node => node.id);
 
   if (rootNodeIds.length === 0) {
-    const cycle = detectCycle(graph);
-    if (cycle) {
-      const message = `Cyclic graph detected: ${cycle.join(' -> ')}`;
-      errors.push(message);
-      logger.error(message);
-    } else {
-      const message = 'Graph has no starting nodes. Execution is blocked until at least one root node exists.';
-      errors.push(message);
-      logger.error(message);
-    }
-
-    return {
-      success: false,
-      steps,
-      warnings,
-      errors,
-      rootNodeIds,
-      executionOrder,
-    };
+    const message = 'No strictly "Start" nodes found. Execution must start via a Start node.';
+    errors.push(message);
+    logger.error(message);
+    return { success: false, steps, warnings, errors, rootNodeIds, executionOrder };
   }
 
-  const initialPayload = normalizePayload(initialInput);
-
-  const readyQueue = [...rootNodeIds];
+  let readyQueue = [...rootNodeIds];
   const incomingRemaining = new Map<string, number>();
   const incomingSources = new Map<string, string[]>();
+  
+  // Track output payloads for each node
+  const outputPayloads = new Map<string, ExecutionPayload>();
 
   nodes.forEach(node => {
     const validIncoming = graph.incomingByNode.get(node.id) ?? [];
@@ -265,102 +194,100 @@ export const executeWorkflowGraph = (
   });
 
   while (readyQueue.length > 0) {
-    const nodeId = readyQueue.shift();
-    if (!nodeId || processed.has(nodeId)) {
-      continue;
-    }
+    const currentWave = [...readyQueue];
+    readyQueue = [];
+    const stepWave: ExecutionStep[] = [];
 
-    const node = graph.nodeMap.get(nodeId);
-    if (!node) {
-      continue;
-    }
+    for (const nodeId of currentWave) {
+      if (processed.has(nodeId)) continue;
+      
+      const node = graph.nodeMap.get(nodeId);
+      if (!node) continue;
 
-    const runtimeNode = createRuntimeNode(node, initialPayload);
-    const incomingCount = incomingSources.get(nodeId)?.length ?? 0;
-    const availableInput =
-      payloadByNode.get(nodeId) ?? (incomingCount === 0 ? (initialPayload ?? undefined) : undefined);
+      const runtimeNode = createRuntimeNode(node);
+      const sources = incomingSources.get(nodeId) ?? [];
+      
+      // Combine inputs from sources
+      const incomingPayloads = sources.map(src => outputPayloads.get(src)).filter((p): p is ExecutionPayload => p !== undefined);
+      
+      let availableInput: ExecutionPayload | undefined = undefined;
+      if (incomingPayloads.length > 0) {
+        availableInput = {
+          text: incomingPayloads.map(p => p.text).join(' & '),
+          color: mixColors(incomingPayloads.map(p => p.color ?? ''))
+        };
+      }
 
-    if (!availableInput) {
-      const message = `[Node ID: ${node.id} | Type: ${runtimeNode.type}] → Missing input`;
-      steps.push({
-        nodeId: node.id,
-        nodeName: node.name,
-        nodeType: node.type,
-        status: 'warning',
-        message: 'Missing input',
-      });
-      warnings.push(message);
-      logger.warn(message);
-      processed.add(nodeId);
+      if (!availableInput && runtimeNode.type !== 'start') {
+        const message = `[Node ID: ${node.id} | Type: ${runtimeNode.type}] → Missing input`;
+        stepWave.push({ nodeId: node.id, nodeName: node.name, nodeType: node.type, status: 'warning', message: 'Missing input' });
+        warnings.push(message);
+        processed.add(nodeId);
+        executionOrder.push(nodeId);
+        continue;
+      }
+
+      const output = runtimeNode.execute(availableInput);
       executionOrder.push(nodeId);
-      continue;
-    }
+      processed.add(nodeId);
 
-    if (incomingCount > 1) {
-      const warning = `[Node ID: ${node.id} | Type: ${runtimeNode.type}] → Multiple incoming edges detected; using the latest propagated payload.`;
-      warnings.push(warning);
-      logger.warn(warning);
-    }
+      if (!output) {
+        stepWave.push({
+          nodeId: node.id,
+          nodeName: node.name,
+          nodeType: node.type,
+          status: runtimeNode.type === 'color' || runtimeNode.type === 'log' ? 'warning' : 'error',
+          input: availableInput,
+          message: 'Execution skipped',
+        });
+        continue;
+      }
+      
+      outputPayloads.set(nodeId, output);
 
-    const output = runtimeNode.execute(availableInput);
-    executionOrder.push(nodeId);
-    processed.add(nodeId);
-
-    if (!output) {
-      steps.push({
+      stepWave.push({
         nodeId: node.id,
         nodeName: node.name,
         nodeType: node.type,
-        status: runtimeNode.type === 'color' || runtimeNode.type === 'log' ? 'warning' : 'error',
+        status: 'executed',
         input: availableInput,
-        message: 'Execution skipped',
-      });
-      continue;
-    }
-
-    steps.push({
-      nodeId: node.id,
-      nodeName: node.name,
-      nodeType: node.type,
-      status: 'executed',
-      input: availableInput,
-      output,
-      message:
-        runtimeNode.type === 'color'
+        output,
+        message: runtimeNode.type === 'start' 
+          ? `Started with text: ${output.text}`
+          : runtimeNode.type === 'color'
           ? `Color set to ${output.color ?? DEFAULT_COLOR} for text: ${output.text}`
           : `LOG: ${output.text} (color: ${output.color ?? 'none'})`,
-    });
+      });
 
-    (graph.outgoingByNode.get(nodeId) ?? []).forEach(nextNodeId => {
-      const remaining = (incomingRemaining.get(nextNodeId) ?? 0) - 1;
-      incomingRemaining.set(nextNodeId, remaining);
-      payloadByNode.set(nextNodeId, output);
+      // Prepare next wave
+      for (const nextNodeId of graph.outgoingByNode.get(nodeId) ?? []) {
+        const remaining = (incomingRemaining.get(nextNodeId) ?? 0) - 1;
+        incomingRemaining.set(nextNodeId, remaining);
 
-      if (remaining === 0) {
-        readyQueue.push(nextNodeId);
+        if (remaining === 0) {
+          readyQueue.push(nextNodeId);
+        }
       }
-    });
+    }
+    
+    if (stepWave.length > 0) {
+      steps.push(stepWave);
+    }
   }
 
   if (processed.size < nodes.length) {
-    const cycle = detectCycle(graph);
-    if (cycle) {
-      const message = `Cyclic graph detected: ${cycle.join(' -> ')}`;
-      errors.push(message);
-      logger.error(message);
-    } else {
-      const blockedNodes = nodes.filter(node => !processed.has(node.id)).map(node => node.name);
-      const message = `Broken graph: some nodes never became ready (${blockedNodes.join(', ')}).`;
-      errors.push(message);
-      logger.error(message);
-    }
+    // Only warn about unreachable nodes instead of making it an error, 
+    // since we restrict starting to purely "Start" nodes. Some might be disconnected.
+    const blockedNodes = nodes.filter(node => !processed.has(node.id)).map(node => node.name);
+    warnings.push(`${blockedNodes.length} node(s) were ignored or unreachable.`);
   }
 
-  const lastExecutedStep = [...steps].reverse().find(step => step.output);
+  const lastWave = steps[steps.length - 1];
+  const lastExecutedStep = lastWave ? lastWave.find(step => step.output) : undefined;
 
   return {
-    success: errors.length === 0 && steps.some(step => step.status === 'executed'),
-    steps,
+    success: errors.length === 0 && steps.some(wave => wave.some(s => s.status === 'executed')),
+    steps, // ExecutionStep[][] representing parallel waves
     warnings,
     errors,
     rootNodeIds,

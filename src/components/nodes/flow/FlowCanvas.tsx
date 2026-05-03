@@ -1,13 +1,7 @@
-/**
- * FlowCanvas - Main React Flow component
- * Handles drag-and-drop, connections, and state synchronization
- */
-
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import ReactFlow, {
   Node,
   Edge,
-  Controls,
   Background,
   useNodesState,
   useEdgesState,
@@ -18,8 +12,10 @@ import ReactFlow, {
   NodeTypes,
   EdgeTypes,
   ReactFlowInstance,
+  useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import { ZoomIn, ZoomOut, Minimize2, Lock } from '../../../components/icons';
 import { IWorkflow } from '../../../features/automation/models/Automation';
 import { nodeToFlowNode, connectionToFlowEdge, IFlowNode } from './types';
 import { CustomNode } from './CustomNode';
@@ -32,6 +28,8 @@ interface FlowCanvasProps {
   snapToGrid?: boolean;
   autoFitOnRun?: boolean;
   fitViewTrigger?: number;
+  isLocked?: boolean;
+  onToggleLock?: () => void;
   onNodeDragStop?: (nodeId: string, x: number, y: number) => void;
   onConnect?: (sourceId: string, sourcePort: string, targetId: string, targetPort: string) => void;
   onEdgeReconnect?: (
@@ -57,12 +55,60 @@ const edgeTypes: EdgeTypes = {
   customEdge: CustomEdge,
 };
 
+interface CompactControlsProps {
+  isLocked?: boolean;
+  onToggleLock?: () => void;
+}
+
+const CompactControls: React.FC<CompactControlsProps> = ({ isLocked = false, onToggleLock }) => {
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
+
+  return (
+    <div className="compact-controls">
+      <button
+        className="compact-control-btn"
+        onClick={() => zoomIn()}
+        title="Zoom In"
+        aria-label="Zoom In"
+      >
+        <ZoomIn size={18} strokeWidth={2.2} />
+      </button>
+      <button
+        className="compact-control-btn"
+        onClick={() => zoomOut()}
+        title="Zoom Out"
+        aria-label="Zoom Out"
+      >
+        <ZoomOut size={18} strokeWidth={2.2} />
+      </button>
+      <button
+        className="compact-control-btn"
+        onClick={() => fitView({ padding: 0.15, duration: 280 })}
+        title="Fit View"
+        aria-label="Fit View"
+      >
+        <Minimize2 size={18} strokeWidth={2.2} />
+      </button>
+      <button
+        className={`compact-control-btn ${isLocked ? 'locked' : ''}`}
+        onClick={onToggleLock}
+        title={isLocked ? "Unlock Canvas" : "Lock Canvas"}
+        aria-label={isLocked ? "Unlock Canvas" : "Lock Canvas"}
+      >
+        <Lock size={18} strokeWidth={2.2} />
+      </button>
+    </div>
+  );
+};
+
 export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   workflow,
   showGrid = true,
   snapToGrid = false,
   autoFitOnRun = true,
   fitViewTrigger = 0,
+  isLocked = false,
+  onToggleLock,
   onNodeDragStop,
   onConnect,
   onEdgeReconnect,
@@ -83,14 +129,18 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         return [];
       }
 
-      return value.nodes.map(node =>
-        nodeToFlowNode(node, {
+      return value.nodes.map(node => {
+        const flowNode = nodeToFlowNode(node, {
           onUpdateConfig: patch => onNodeConfigChange?.(node.id, patch),
           onDelete: () => onNodeDelete?.(node.id),
-        })
-      );
+        });
+        return {
+          ...flowNode,
+          draggable: !isLocked,
+        };
+      });
     },
-    [onNodeConfigChange, onNodeDelete]
+    [onNodeConfigChange, onNodeDelete, isLocked]
   );
 
   const toFlowEdges = useCallback((value: IWorkflow | null): Edge[] => {
@@ -144,6 +194,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
             {
               ...connection,
               type: 'customEdge',
+              updatable: true,
             },
             eds
           )
@@ -205,6 +256,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
             ? {
                 ...edge,
                 type: 'customEdge',
+                updatable: true,
               }
             : edge
         )
@@ -329,7 +381,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         fitView
       >
         {showGrid && <Background color="#94a3b8" gap={16} size={1} />}
-        <Controls />
+        <CompactControls isLocked={isLocked} onToggleLock={onToggleLock} />
       </ReactFlow>
     </div>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Play, Palette, FileText, Zap } from '../../../components/icons';
 
 export interface INodeTemplateView {
   id: string;
@@ -15,6 +16,15 @@ interface NodeLibraryViewProps {
   templates: INodeTemplateView[];
 }
 
+const renderIcon = (iconName: string) => {
+  switch (iconName) {
+    case 'play': return <Play size={20} strokeWidth={2} />;
+    case 'palette': return <Palette size={20} strokeWidth={2} />;
+    case 'file-text': return <FileText size={20} strokeWidth={2} />;
+    default: return <Zap size={20} strokeWidth={2} />;
+  }
+};
+
 export const NodeLibraryView: React.FC<NodeLibraryViewProps> = ({ templates }) => {
   return (
     <div className="page-shell">
@@ -29,7 +39,7 @@ export const NodeLibraryView: React.FC<NodeLibraryViewProps> = ({ templates }) =
         {templates.map(template => (
           <article key={template.id} className="node-library-card">
             <header className="node-library-card-head">
-              <span className="node-library-icon">{template.icon}</span>
+              <span className="node-library-icon">{renderIcon(template.icon)}</span>
               <div>
                 <h3>{template.name}</h3>
                 <span className="node-library-type">{template.type}</span>
@@ -40,9 +50,6 @@ export const NodeLibraryView: React.FC<NodeLibraryViewProps> = ({ templates }) =
 
             <div className="node-library-meta">
               <span>Category: {template.category}</span>
-              <span>
-                Ports: {template.inputsCount} in / {template.outputsCount} out
-              </span>
             </div>
           </article>
         ))}

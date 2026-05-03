@@ -61,13 +61,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, onToggle, 
 
         <div className="settings-list">
           {settingsMeta.map(item => (
-            <label key={item.key} className="settings-item">
+            <div key={item.key} className="settings-item">
               <div>
                 <strong>{item.label}</strong>
                 <p>{item.description}</p>
               </div>
-              <input type="checkbox" checked={settings[item.key]} onChange={() => onToggle(item.key)} />
-            </label>
+              <label className="switch">
+                <input type="checkbox" checked={settings[item.key]} onChange={() => onToggle(item.key)} />
+                <span className="slider"></span>
+              </label>
+            </div>
           ))}
         </div>
 

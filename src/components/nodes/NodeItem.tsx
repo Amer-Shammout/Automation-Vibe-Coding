@@ -14,9 +14,6 @@ interface NodeItemProps {
 }
 
 export const NodeItem: React.FC<NodeItemProps> = ({ node, isSelected, onSelect, onDelete }) => {
-  const inputCount = node.inputs?.length ?? 0;
-  const outputCount = node.outputs?.length ?? 0;
-
   return (
     <div className={`node-item ${isSelected ? 'selected' : ''}`} onClick={() => onSelect?.(node)}>
       <div className="node-item-accent" />
@@ -45,8 +42,6 @@ export const NodeItem: React.FC<NodeItemProps> = ({ node, isSelected, onSelect, 
 
       <div className="node-item-meta">
         <span className="node-item-chip">{node.type}</span>
-        <span className="node-item-chip node-item-chip-soft">{inputCount} inputs</span>
-        <span className="node-item-chip node-item-chip-soft">{outputCount} outputs</span>
       </div>
 
       <div className="node-item-ports">

@@ -3,13 +3,14 @@
  */
 
 .custom-edge {
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .custom-edge .edge-path {
-  stroke: url(#edgeGradient);
   stroke-width: 2;
   fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   transition: stroke-width 0.2s ease;
 }
 
@@ -23,10 +24,11 @@
 }
 
 .custom-edge .edge-flow {
-  stroke: url(#edgeGradient);
   stroke-width: 1.5;
   fill: none;
   opacity: 0.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   animation: flowAnimation 2s infinite linear;
   stroke-dasharray: 5, 5;
 }
@@ -41,6 +43,8 @@
   stroke-width: 4;
   fill: none;
   opacity: 0.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 @keyframes flowAnimation {

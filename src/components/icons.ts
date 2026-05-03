@@ -24,4 +24,10 @@ export {
   Calendar,
   Maximize2,
   Minimize2,
+  Palette,
+  FileText,
+  ZoomIn,
+  ZoomOut,
+  Maximize,
+  Lock,
 } from 'lucide-react';

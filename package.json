@@ -4,6 +4,7 @@
   "description": "Node-based automation editor using React, TypeScript, and MVVM architecture",
   "private": true,
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
     "axios": "^1.7.0",
     "lucide-react": "^0.292.0",
     "react": "^18.3.0",
@@ -40,8 +41,8 @@
       "react-app"
     ]
   },
-    "homepage": "https://Amer-Shammout.github.io/Automation-Vibe-Coding",
-    "browserslist": {
+  "homepage": "https://Amer-Shammout.github.io/Automation-Vibe-Coding",
+  "browserslist": {
     "production": [
       ">0.2%",
       "not dead",

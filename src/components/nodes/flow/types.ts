@@ -66,6 +66,7 @@ export const connectionToFlowEdge = (connection: IConnection): IFlowEdge => ({
   sourceHandle: `output-${connection.sourcePortId}`,
   targetHandle: `input-${connection.targetPortId}`,
   type: 'customEdge',
+  updatable: true,
 });
 
 /**
